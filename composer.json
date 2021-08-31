@@ -1,0 +1,14 @@
+{
+    "name": "kamrul/press",
+    "description": "An elegant markdown-power blocg for the Laravel",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kamrul Islam",
+            "email": "anik825@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "orchestra/testbench": "^6.20"
+    }
+}

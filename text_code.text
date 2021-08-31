@@ -1,0 +1,6 @@
+1. cd /home/kamrul/Documents/code/
+2. mkdir Press
+3. cd Press/
+4. composer init
+5. composer --dev orchestera/testbench
+6. 
