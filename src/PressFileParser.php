@@ -4,6 +4,8 @@ namespace kamrul\Press;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+use kamrul\Press\Fields\Date;
 
 class PressFileParser
 {
@@ -44,11 +46,25 @@ class PressFileParser
     protected function processFields()
     {
         foreach ($this->data as $field => $value){
-            if($field === 'date'){
-                $this->data[$field] = Carbon::parse($value);
-            }if($field === 'body'){
-                $this->data[$field] = MarkdownParser::parse($value);
-            }
+//            if($field === 'date'){
+//                $this->data[$field] = Carbon::parse($value);
+//            }else if($field === 'body'){
+//                $this->data[$field] = MarkdownParser::parse($value);
+//            }
+
+//            Date::process($field, $value);
+            //studly
+//            if($field === 'date'){
+                $class = 'kamrul\\Press\\Fields\\' . Str::title($field);
+                if(class_exists($class) && method_exists($class, 'process')){
+//                    dd($class::process($field, $value));
+                    $this->data = array_merge(
+                        $this->data,
+                        $class::process($field, $value)
+                    );
+                }
+//            }
         }
+        dd($this->data);
     }
 }
