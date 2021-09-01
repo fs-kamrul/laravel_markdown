@@ -3,4 +3,12 @@
 3. cd Press/
 4. composer init
 5. composer --dev orchestera/testbench
-6. 
+6. git init
+7. git init
+8. sudo nano .gitignore
+9. mkdir src
+10. mkdir tests
+11. mkdir tests/Feature
+12. composer require --dev phpunit/phpunit ^9
+13. composer require erusev/parsedown
+

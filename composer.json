@@ -9,6 +9,20 @@
         }
     ],
     "require-dev": {
-        "orchestra/testbench": "^6.20"
+        "orchestra/testbench": "^6.20",
+        "phpunit/phpunit": "^9"
+    },
+    "autoload": {
+	"psr-4": {
+	    "kamrul\\Press\\": "src/"
+	}
+    },
+    "autoload-dev": {
+	"psr-4": {
+	    "kamrul\\Press\\Tests\\": "tests/"
+	}
+    },
+    "require": {
+        "erusev/parsedown": "^1.7"
     }
 }
