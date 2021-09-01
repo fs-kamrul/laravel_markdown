@@ -2,6 +2,7 @@
 
 namespace kamrul\Press\Tests\Feature;
 
+use Carbon\Carbon;
 use kamrul\Press\PressFileParser;
 use Orchestra\Testbench\TestCase;
 
@@ -16,6 +17,16 @@ class PressFileParserTest extends TestCase
 
         $this->assertStringContainsString('title: my title', $data[1]);
         $this->assertStringContainsString('description: description here', $data[1]);
+        $this->assertStringContainsString('Block post body here', $data[2]);
+    }
+    /** @test */
+    public function a_string_can_also_be_used_instead()
+    {
+        $pressFileParser = (new PressFileParser("---\ntitle: my title\n---\nBlock post body hear"));
+
+        $data = $pressFileParser->getData();
+
+        $this->assertStringContainsString('title: my title', $data[1]);
         $this->assertStringContainsString('Block post body hear', $data[2]);
     }
     /** @test */
@@ -33,6 +44,16 @@ class PressFileParserTest extends TestCase
         $pressFileParser = (new PressFileParser(__DIR__.'/../blogs/MarkFile1.md'));
 
         $data = $pressFileParser->getData();
-        $this->assertEquals("# Heading\n\nBlock post body here",$data['body']);
+        $this->assertEquals("<h1>Heading</h1>\n<p>Block post body here</p>",$data['body']);
+    }
+    /** @test */
+    public function a_date_field_gets_parsed()
+    {
+        $pressFileParser = (new PressFileParser("---\ndate: May 14 1988\n---\n"));
+
+        $data = $pressFileParser->getData();
+
+        $this->assertInstanceOf(Carbon::class, $data['date']);
+        $this->assertEquals('05/14/1988',$data['date']->format('m/d/Y'));
     }
 }
