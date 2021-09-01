@@ -13,7 +13,7 @@ class PressFileParserTest extends TestCase
     {
         $pressFileParser = (new PressFileParser(__DIR__.'/../blogs/MarkFile1.md'));
 
-        $data = $pressFileParser->getData();
+        $data = $pressFileParser->getRawData();
 
         $this->assertStringContainsString('title: my title', $data[1]);
         $this->assertStringContainsString('description: description here', $data[1]);
@@ -24,7 +24,7 @@ class PressFileParserTest extends TestCase
     {
         $pressFileParser = (new PressFileParser("---\ntitle: my title\n---\nBlock post body hear"));
 
-        $data = $pressFileParser->getData();
+        $data = $pressFileParser->getRawData();
 
         $this->assertStringContainsString('title: my title', $data[1]);
         $this->assertStringContainsString('Block post body hear', $data[2]);

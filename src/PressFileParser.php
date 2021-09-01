@@ -10,6 +10,7 @@ use kamrul\Press\Fields\Date;
 class PressFileParser
 {
     protected $filename;
+    protected $rawdata;
     protected $data;
     public function __construct($filename)
     {
@@ -23,24 +24,28 @@ class PressFileParser
     {
         return $this->data;
     }
+    public function getRawData()
+    {
+        return $this->rawdata;
+    }
     protected function splitFile()
     {
         preg_match('/^\-{3}(.*?)\-{3}(.*)/s',
             File::exists($this->filename) ? File::get($this->filename) : $this->filename,
-            $this->data
+            $this->rawdata
         );
 //        dd($this->data);
     }
     protected function explodeData()
     {
 //        dd(explode("\n",trim($this->data[1])));
-        foreach (explode("\n",trim($this->data[1])) as $fieldString){
+        foreach (explode("\n",trim($this->rawdata[1])) as $fieldString){
             preg_match('/(.*):\s?(.*)/', $fieldString, $fieldArray);
 
             $this->data[$fieldArray[1]] = $fieldArray[2];
         }
 //        dd(trim($this->data[2]));
-        $this->data['body'] = trim($this->data[2]);
+        $this->data['body'] = trim($this->rawdata[2]);
     }
 
     protected function processFields()
@@ -65,6 +70,6 @@ class PressFileParser
                 }
 //            }
         }
-        dd($this->data);
+//        dd($this->data);
     }
 }
