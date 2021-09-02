@@ -4,7 +4,7 @@ namespace kamrul\Press\Tests\Feature;
 
 use Carbon\Carbon;
 use kamrul\Press\PressFileParser;
-use Orchestra\Testbench\TestCase;
+use kamrul\Press\Tests\TestCase;
 
 class PressFileParserTest extends TestCase
 {

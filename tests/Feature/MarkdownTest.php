@@ -3,7 +3,7 @@
 namespace kamrul\Press\Tests\Feature;
 
 use kamrul\Press\MarkdownParser;
-use Orchestra\Testbench\TestCase;
+use kamrul\Press\Tests\TestCase;
 
 class MarkdownTest extends TestCase
 {

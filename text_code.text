@@ -11,4 +11,5 @@
 11. mkdir tests/Feature
 12. composer require --dev phpunit/phpunit ^9
 13. composer require erusev/parsedown
+14. composer require --dev mockery/mockery
 
