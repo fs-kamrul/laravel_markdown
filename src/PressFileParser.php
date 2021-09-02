@@ -57,18 +57,15 @@ class PressFileParser
 //                $this->data[$field] = MarkdownParser::parse($value);
 //            }
 
-//            Date::process($field, $value);
-            //studly
-//            if($field === 'date'){
                 $class = 'kamrul\\Press\\Fields\\' . Str::title($field);
-                if(class_exists($class) && method_exists($class, 'process')){
+                if( ! class_exists($class) && ! method_exists($class, 'process')){
+                    $class = 'kamrul\\Press\\Fields\\Extra';
+                }
 //                    dd($class::process($field, $value));
                     $this->data = array_merge(
                         $this->data,
-                        $class::process($field, $value)
+                        $class::process($field, $value, $this->data)
                     );
-                }
-//            }
         }
 //        dd($this->data);
     }
