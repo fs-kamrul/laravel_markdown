@@ -1,6 +1,6 @@
 <?php
 
-namespace kamrul\Press\Models;
+namespace kamrul\Press;
 
 use Illuminate\Database\Eloquent\Model;
 

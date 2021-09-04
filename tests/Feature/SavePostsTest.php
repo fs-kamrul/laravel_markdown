@@ -1,10 +1,10 @@
 <?php
 
-namespace kamrul\Press\Tests\Feature;
+namespace kamrul\Press\Tests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use kamrul\Press\Models\Post;
-use kamrul\Press\Tests\TestCase;
+use kamrul\Press\Post;
+//use kamrul\Press\Tests\TestCase;
 
 class SavePostsTest extends TestCase
 {

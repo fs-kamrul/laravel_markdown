@@ -11,20 +11,30 @@
     "require-dev": {
         "orchestra/testbench": "^6.20",
         "phpunit/phpunit": "^9",
-        "mockery/mockery": "^1.4",
-        "laravel/legacy-factories": "^1.1"
+        "mockery/mockery": "^1.4"
     },
     "autoload": {
-	"psr-4": {
-	    "kamrul\\Press\\": "src/"
-	}
+        "psr-4": {
+            "kamrul\\Press\\": "src/"
+        },
+        "classmap": [
+            "database/factories"
+        ]
     },
     "autoload-dev": {
 	"psr-4": {
 	    "kamrul\\Press\\Tests\\": "tests/"
-	}
+    }
     },
     "require": {
-        "erusev/parsedown": "^1.7"
+        "erusev/parsedown": "^1.7",
+        "laravel/legacy-factories": "^1.1"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "kamrul\\Press\\PressBaseServiceProvider"
+            ]
+        }
     }
 }
