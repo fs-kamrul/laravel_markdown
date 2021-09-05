@@ -2,19 +2,81 @@
 
 namespace kamrul\Press;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class Press
 {
-    public static function configNotPublished()
+    /**
+     * @var array
+     */
+    protected $fields = [];
+
+    /**
+     * Check if Press config file has been published and set.
+     *
+     * @return bool
+     */
+    public function configNotPublished()
     {
         return is_null(config('press'));
     }
-    public static function driver()
+
+    /**
+     * Get an instance of the set driver.
+     *
+     * @return mixed
+     */
+    public function driver()
     {
-        $driver = Str::title(config('press.driver'));
-        $class = 'kamrul\Press\Drivers\\' . $driver . 'Driver';
+        $driver = Arr::collapse(config('press.driver'));
+        $class = 'vicgonvt\Press\Drivers\\' . $driver . 'Driver';
 
         return new $class;
     }
+
+    /**
+     * Get the currently set URI path for the blog.
+     *
+     * @return string
+     */
+    public function path()
+    {
+        return config('press.path', 'blogs');
+    }
+
+    /**
+     * Merges an array of fields into the fields variable.
+     *
+     * @param array $fields
+     */
+    public function fields(array $fields)
+    {
+        $this->fields = array_merge($this->fields, $fields);
+    }
+
+    /**
+     * Returns the list of available fields in reverse order.
+     *
+     * @return array
+     */
+    public function availableFields()
+    {
+        return array_reverse($this->fields);
+    }
+//    public function configNotPublished()
+//    {
+//        return is_null(config('press'));
+//    }
+//    public function driver()
+//    {
+//        $driver = Str::title(config('press.driver'));
+//        $class = 'kamrul\Press\Drivers\\' . $driver . 'Driver';
+//
+//        return new $class;
+//    }
+//    public function path()
+//    {
+//        return config('press.path'. 'blogs');
+//    }
 }

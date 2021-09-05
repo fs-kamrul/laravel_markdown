@@ -3,39 +3,53 @@
 namespace kamrul\Press\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
-use kamrul\Press\Post;
-use kamrul\Press\Press;
-use kamrul\Press\PressFileParser;
+use kamrul\Press\Facades\Press;
+use kamrul\Press\Repositories\PostRepository;
+
 
 class ProcessCommand extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
     protected $signature = 'press:process';
-    protected $description = 'Update blog posts.';
-    public function handle()
-    {
-//        $this->info('hello');
 
-        if (Press::configNotPublished()){
-            return $this->warn('Please publish the config file by running \'php artisan vendor:publish --tag=press-config\'');
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Update blog posts.';
+
+
+    /**
+     * Execute the console command.
+     *
+     * @param \kamrul\Press\Repositories\PostRepository $postRepository
+     *
+     * @return mixed
+     */
+    public function handle(PostRepository $postRepository)
+    {
+        if (Press::configNotPublished()) {
+            return $this->warn('Please publish the config file by running ' .
+                '\'php artisan vendor:publish --tag=press-config\'');
         }
+
         try {
             $posts = Press::driver()->fetchPosts();
 
+            $this->info('Number of Posts: ' . count($posts));
+
             foreach ($posts as $post) {
-                Post::created([
-                    'identifier' => $post['identifier'],
-                    'slug' => Str::slug($post['title']),
-                    'title' => $post['title'],
-                    'body' => $post['body'],
-                    'extra' => $post['extra'] ?? [],
-                ]);
+                $postRepository->save($post);
+
+                $this->info('Post: ' . $post['title']);
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
-
-
     }
 }

@@ -2,71 +2,135 @@
 
 namespace kamrul\Press;
 
-use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
-use kamrul\Press\Fields\Date;
+use ReflectionClass;
 
 class PressFileParser
 {
+    /**
+     * @var string
+     */
     protected $filename;
-    protected $rawdata;
+
+    /**
+     * @var array
+     */
+    protected $rawData;
+
+    /**
+     * @var array
+     */
     protected $data;
+
+    /**
+     * PressFileParser constructor.
+     *
+     * @param $filename
+     *
+     * @throws \ReflectionException
+     */
     public function __construct($filename)
     {
         $this->filename = $filename;
 
         $this->splitFile();
+
         $this->explodeData();
+
         $this->processFields();
     }
+
+    /**
+     * Get the underlying parsed data.
+     *
+     * @return mixed
+     */
     public function getData()
     {
         return $this->data;
     }
+
+    /**
+     * Get the underlying raw data.
+     *
+     * @return mixed
+     */
     public function getRawData()
     {
-        return $this->rawdata;
+        return $this->rawData;
     }
+
+    /**
+     * It separates the head from the body for further manipulation
+     *
+     * @return void
+     */
     protected function splitFile()
     {
         preg_match('/^\-{3}(.*?)\-{3}(.*)/s',
             File::exists($this->filename) ? File::get($this->filename) : $this->filename,
-            $this->rawdata
+            $this->rawData
         );
-//        dd($this->data);
     }
+
+    /**
+     * Separate each line in the head, trims it and saves it, along with the body.
+     *
+     * @return void
+     */
     protected function explodeData()
     {
-//        dd(explode("\n",trim($this->data[1])));
-        foreach (explode("\n",trim($this->rawdata[1])) as $fieldString){
+        foreach (explode("\n", trim($this->rawData[1])) as $fieldString) {
             preg_match('/(.*):\s?(.*)/', $fieldString, $fieldArray);
 
             $this->data[$fieldArray[1]] = $fieldArray[2];
         }
-//        dd(trim($this->data[2]));
-        $this->data['body'] = trim($this->rawdata[2]);
+
+        $this->data['body'] = trim($this->rawData[2]);
     }
 
+    /**
+     * Iterates through each field and tries to find a class with a matching name. If found
+     * it will call a process() method on it. Any other fields, get sent sent to a catch
+     * all class called Extra, where they will be merged and JSON encoded in extra.
+     *
+     * @return void
+     * @throws \ReflectionException
+     */
     protected function processFields()
     {
-        foreach ($this->data as $field => $value){
-//            if($field === 'date'){
-//                $this->data[$field] = Carbon::parse($value);
-//            }else if($field === 'body'){
-//                $this->data[$field] = MarkdownParser::parse($value);
-//            }
+        foreach ($this->data as $field => $value) {
 
-                $class = 'kamrul\\Press\\Fields\\' . Str::title($field);
-                if( ! class_exists($class) && ! method_exists($class, 'process')){
-                    $class = 'kamrul\\Press\\Fields\\Extra';
-                }
-//                    dd($class::process($field, $value));
-                    $this->data = array_merge(
-                        $this->data,
-                        $class::process($field, $value, $this->data)
-                    );
+            $class = $this->getField(Arr::collapse($field));
+
+            if ( ! class_exists($class) && ! method_exists($class, 'process')) {
+                $class = 'kamrul\\Press\\Fields\\Extra';
+            }
+
+            $this->data = array_merge(
+                $this->data,
+                $class::process($field, $value, $this->data)
+            );
         }
-//        dd($this->data);
+    }
+
+    /**
+     * Attempt to find a field by the same name out of the array of available fields.
+     *
+     * @param $field
+     *
+     * @return string
+     * @throws \ReflectionException
+     */
+    private function getField($field)
+    {
+        foreach (\kamrul\Press\Facades\Press::availableFields() as $availableField) {
+            $class = new ReflectionClass($availableField);
+
+            if ($class->getShortName() == $field) {
+                return $class->getName();
+            }
+        }
     }
 }

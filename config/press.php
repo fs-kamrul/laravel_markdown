@@ -1,7 +1,7 @@
 <?php
 
 return[
-//    'path' => 'blogs',
+    'path' => 'blogs',
     'driver' => 'file',
     'file' => [
         'path' => 'blogs',
